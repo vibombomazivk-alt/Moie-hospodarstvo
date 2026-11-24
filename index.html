@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#28613d">
+<title>Моє господарство</title>
+<link rel="manifest" href="manifest.webmanifest">
+<style>
+:root{--green:#28613d;--light:#edf5ee;--ink:#203126;--muted:#617166}
+*{box-sizing:border-box}body{margin:0;background:#f4f7f4;color:var(--ink);font:16px system-ui,-apple-system,Segoe UI,sans-serif}
+header{background:linear-gradient(135deg,#214f32,#3f8150);color:white;padding:24px 18px 20px;border-radius:0 0 24px 24px}
+h1{font-size:25px;margin:0 0 5px}header p{margin:0;color:#e1eee3}
+main{max-width:760px;margin:auto;padding:16px}
+.weather,.panel{background:white;border-radius:18px;padding:16px;margin:12px 0;box-shadow:0 2px 12px #16351b0d}
+.weather-top{display:flex;justify-content:space-between;align-items:center;gap:12px}.temp{font-size:34px;font-weight:750}
+.small{font-size:13px;color:var(--muted)}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.tile{border:0;border-radius:16px;background:var(--light);padding:16px;text-align:left;color:var(--ink);min-height:105px;font:inherit;cursor:pointer}
+.tile b{display:block;margin:7px 0 3px}.emoji{font-size:25px}
+button,.btn{background:var(--green);color:white;border:0;border-radius:12px;padding:11px 14px;font:inherit;cursor:pointer}
+button.secondary{background:#e8f0e9;color:var(--green)}
+input,textarea,select{width:100%;padding:12px;border:1px solid #cbd8cd;border-radius:11px;font:inherit;margin:6px 0 10px;background:white}
+section[hidden]{display:none}.back{margin:0 0 12px}.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+ul{padding-left:20px}.forecast{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.day{background:#f1f6f1;padding:10px;border-radius:12px}
+footer{text-align:center;color:var(--muted);font-size:12px;padding:20px}
+#answer{white-space:pre-wrap;background:#f1f6f1;padding:12px;border-radius:12px;margin-top:10px}
+</style>
+</head>
+<body>
+<header><h1>🌾 Моє господарство</h1><p>Твій помічник у полі та вдома</p></header>
+<main>
+<section id="home">
+ <div class="weather">
+  <div class="weather-top"><div><b>🌦️ Погода для господарства</b><div class="small">Велика Городниця, Рівненська область</div></div><div class="temp" id="temp">—°</div></div>
+  <p id="weatherText" class="small">Завантажуємо прогноз…</p>
+  <div class="forecast" id="forecast"></div>
+  <p class="small" id="weatherNote">Погодні дані допомагають планувати роботи, але перед обробкою перевіряй інструкцію до препарату.</p>
+  <button onclick="loadWeather()">Оновити погоду</button>
+ </div>
+ <div class="grid">
+  <button class="tile" onclick="show('calendar')"><span class="emoji">📅</span><b>Календар робіт</b><span class="small">Плани та записи</span></button>
+  <button class="tile" onclick="show('plants')"><span class="emoji">🌱</span><b>Город і сад</b><span class="small">Посадки й підживлення</span></button>
+  <button class="tile" onclick="show('animals')"><span class="emoji">🐓</span><b>Тварини і птиця</b><span class="small">Облік кормів</span></button>
+  <button class="tile" onclick="show('money')"><span class="emoji">💰</span><b>Фінанси</b><span class="small">Витрати та доходи</span></button>
+  <button class="tile" onclick="show('photo')"><span class="emoji">📷</span><b>Фото рослини</b><span class="small">Додати фото для огляду</span></button>
+  <button class="tile" onclick="show('voice')"><span class="emoji">🎙️</span><b>Мій агроном</b><span class="small">Голосові запитання</span></button>
+ </div>
+</section>
+<section id="calendar" hidden><button class="secondary back" onclick="show('home')">← Головне меню</button><div class="panel"><h2>📅 Календар робіт</h2><label>Дата<input type="date" id="workDate"></label><label>Що потрібно зробити?<textarea id="workText" placeholder="Наприклад: перевірити крапельний полив"></textarea></label><button onclick="addWork()">Зберегти роботу</button><div id="workList"></div></div></section>
+<section id="plants" hidden><button class="secondary back" onclick="show('home')">← Головне меню</button><div class="panel"><h2>🌱 Город і сад</h2><p>Записуй посадки, сорти, підживлення та врожай.</p><label>Культура<input id="crop" placeholder="Полуниця, картопля, помідори…"></label><label>Подія / примітка<textarea id="cropNote" placeholder="Дата посадки, добриво, полив…"></textarea></label><button onclick="saveNote('plant')">Зберегти запис</button><div id="plantList"></div></div></section>
+<section id="animals" hidden><button class="secondary back" onclick="show('home')">← Головне меню</button><div class="panel"><h2>🐓 Тварини і птиця</h2><label>Вид / група<input id="animal" placeholder="Качки, кури…"></label><label>Кількість<input id="animalCount" type="number" min="0" placeholder="Кількість"></label><label>Примітка<input id="animalNote" placeholder="Корм, облік, інше"></label><button onclick="saveNote('animal')">Зберегти</button><div id="animalList"></div></div></section>
+<section id="money" hidden><button class="secondary back" onclick="show('home')">← Головне меню</button><div class="panel"><h2>💰 Фінанси</h2><label>Опис<input id="moneyName" placeholder="Насіння, добрива, продаж урожаю"></label><label>Сума, грн<input id="moneyAmount" type="number" min="0" step="0.01"></label><label>Тип<select id="moneyType"><option>Витрата</option><option>Дохід</option></select></label><button onclick="addMoney()">Додати</button><div id="moneyList"></div></div></section>
+<section id="photo" hidden><button class="secondary back" onclick="show('home')">← Головне меню</button><div class="panel"><h2>📷 Фото рослини</h2><p>Зроби фото листка або всієї рослини. Це перший крок для огляду; автоматичне визначення хвороб потребує підключення окремого AI-сервісу.</p><input type="file" accept="image/*" capture="environment" id="plantPhoto"><img id="preview" style="max-width:100%;border-radius:12px;display:none"><label>Що помітив на рослині?<textarea id="symptoms" placeholder="Плями, пожовтіння, комахи, в'янення…"></textarea></label><button onclick="photoInfo()">Підготувати опис для аналізу</button><div id="photoResult"></div></div></section>
+<section id="voice" hidden><button class="secondary back" onclick="show('home')">← Головне меню</button><div class="panel"><h2>🎙️ Мій агроном</h2><p>Можна надиктувати запитання. Прототип розпізнає мовлення, якщо браузер підтримує цю функцію.</p><button onclick="listen()">🎙️ Говорити</button><p id="voiceText" class="small">Натисни кнопку та скажи запитання.</p><label>Або напиши запитання<textarea id="question" placeholder="Що врахувати перед підживленням полуниці?"></textarea></label><button onclick="answerLocal()">Отримати підказку</button><div id="answer"></div><p class="small">Голосова відповідь і персональні агрономічні рекомендації з AI будуть додані в наступній версії.</p></div></section>
+</main><footer>Перший прототип · Потрібне підключення до інтернету для прогнозу погоди</footer>
+<script>
+const $=id=>document.getElementById(id);
+function show(id){document.querySelectorAll('main section').forEach(s=>s.hidden=true);$(id).hidden=false;window.scrollTo(0,0)}
+const lat=50.65501, lon=25.49483; // орієнтовний центр села Велика Городниця; для поля можна уточнити точку
+async function loadWeather(){
+ $('weatherText').textContent='Оновлюємо прогноз…';
+ try{
+  const u=`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,precipitation,wind_speed_10m,weather_code&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,precipitation_sum&forecast_days=3&timezone=Europe%2FKyiv`;
+  const d=await (await fetch(u)).json();
+  $('temp').textContent=Math.round(d.current.temperature_2m)+'°';
+  $('weatherText').textContent=`Зараз: вологість ${d.current.relative_humidity_2m}%, опади ${d.current.precipitation} мм, вітер ${d.current.wind_speed_10m} км/год.`;
+  $('forecast').innerHTML=d.daily.time.map((day,i)=>`<div class="day"><b>${new Date(day+'T12:00:00').toLocaleDateString('uk-UA',{weekday:'short'})}</b><div>${Math.round(d.daily.temperature_2m_max[i])}° / ${Math.round(d.daily.temperature_2m_min[i])}°</div><div class="small">Дощ: ${d.daily.precipitation_probability_max[i]??'—'}%</div></div>`).join('');
+ }catch(e){$('weatherText').textContent='Не вдалося завантажити прогноз. Перевір інтернет і спробуй ще раз.'}
+}
+function get(k){try{return JSON.parse(localStorage.getItem(k)||'[]')}catch{return []}}
+function put(k,v){localStorage.setItem(k,JSON.stringify(v))}
+function addWork(){let a=get('works');if(!$('workText').value.trim())return;a.push({date:$('workDate').value,text:$('workText').value});put('works',a);$('workText').value='';renderWorks()}
+function renderWorks(){$('workList').innerHTML='<h3>Заплановано</h3>'+get('works').map(x=>`<p>📌 <b>${x.date||'Без дати'}</b> — ${esc(x.text)}</p>`).join('')}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function saveNote(type){let a=get(type);if(type==='plant'){if(!$('crop').value.trim())return;a.push($('crop').value+': '+$('cropNote').value);$('crop').value='';$('cropNote').value='';$('plantList').innerHTML=a.map(x=>'<p>'+esc(x)+'</p>').join('');}else{if(!$('animal').value.trim())return;a.push($('animal').value+' — '+$('animalCount').value+' шт.; '+$('animalNote').value);$('animal').value='';$('animalCount').value='';$('animalNote').value='';$('animalList').innerHTML=a.map(x=>'<p>'+esc(x)+'</p>').join('')}put(type,a)}
+function addMoney(){let a=get('money');let n=Number($('moneyAmount').value);if(!n||!$('moneyName').value.trim())return;a.push({name:$('moneyName').value,amount:n,type:$('moneyType').value});put('money',a);$('moneyName').value='';$('moneyAmount').value='';$('moneyList').innerHTML=a.map(x=>`<p>${esc(x.type)}: ${esc(x.name)} — ${x.amount.toFixed(2)} грн</p>`).join('')+`<b>Баланс: ${a.reduce((s,x)=>s+(x.type==='Дохід'?x.amount:-x.amount),0).toFixed(2)} грн</b>`}
+$('plantPhoto').addEventListener('change',e=>{let f=e.target.files[0];if(f){$('preview').src=URL.createObjectURL(f);$('preview').style.display='block'}});
+function photoInfo(){$('photoResult').textContent='Фото вибране. Опис: '+$('symptoms').value+'. Для автоматичного аналізу фото потрібне підключення AI-модуля.'}
+function listen(){let SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){$('voiceText').textContent='На цьому браузері голосове введення не підтримується. Можна написати запитання нижче.';return}let r=new SR();r.lang='uk-UA';r.onresult=e=>{$('question').value=e.results[0][0].transcript;$('voiceText').textContent='Розпізнано: '+$('question').value};r.onerror=()=>{$('voiceText').textContent='Не вдалося розпізнати мовлення. Спробуй ще раз.'};r.start()}
+function answerLocal(){let q=$('question').value.trim();$('answer').textContent=q?'Я почув запитання: «'+q+'». Щоб дати точну пораду, потрібно врахувати культуру, фазу росту, ґрунт і прогноз погоди. У цій першій версії AI-відповіді ще не підключені.':'Спочатку напиши або надиктуй запитання.';if('speechSynthesis'in window&&q){let u=new SpeechSynthesisUtterance($('answer').textContent);u.lang='uk-UA';speechSynthesis.speak(u)}}
+$('workDate').value=new Date().toISOString().slice(0,10);renderWorks();loadWeather();
+if('serviceWorker'in navigator && location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js').catch(()=>{});
+</script>
+</body></html>
