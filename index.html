@@ -38,7 +38,7 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:20px}
   <button onclick="loadWeather()">Оновити погоду</button>
  </div>
  <div class="grid">
-  <button class="tile" onclick="show('calendar')"><span class="emoji">📅</span><b>Календар робіт</b><span class="small">Плани та записи</span></button>
+  <button class="tile" onclick="show('strawberry')">🍓 Полуниця</button><button class="tile" onclick="show('calendar')"><span class="emoji">📅</span><b>Календар робіт</b><span class="small">Плани та записи</span></button>
   <button class="tile" onclick="show('plants')"><span class="emoji">🌱</span><b>Город і сад</b><span class="small">Посадки й підживлення</span></button>
   <button class="tile" onclick="show('animals')"><span class="emoji">🐓</span><b>Тварини і птиця</b><span class="small">Облік кормів</span></button>
   <button class="tile" onclick="show('money')"><span class="emoji">💰</span><b>Фінанси</b><span class="small">Витрати та доходи</span></button>
@@ -48,7 +48,26 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:20px}
 </section>
 <section id="calendar" hidden><button class="secondary back" onclick="show('home')">← Головне меню</button><div class="panel"><h2>📅 Календар робіт</h2><label>Дата<input type="date" id="workDate"></label><label>Що потрібно зробити?<textarea id="workText" placeholder="Наприклад: перевірити крапельний полив"></textarea></label><button onclick="addWork()">Зберегти роботу</button><div id="workList"></div></div></section>
 <section id="plants" hidden><button class="secondary back" onclick="show('home')">← Головне меню</button><div class="panel"><h2>🌱 Город і сад</h2><p>Записуй посадки, сорти, підживлення та врожай.</p><label>Культура<input id="crop" placeholder="Полуниця, картопля, помідори…"></label><label>Подія / примітка<textarea id="cropNote" placeholder="Дата посадки, добриво, полив…"></textarea></label><button onclick="saveNote('plant')">Зберегти запис</button><div id="plantList"></div></div></section>
-<section id="animals" hidden><button class="secondary back" onclick="show('home')">← Головне меню</button><div class="panel"><h2>🐓 Тварини і птиця</h2><label>Вид / група<input id="animal" placeholder="Качки, кури…"></label><label>Кількість<input id="animalCount" type="number" min="0" placeholder="Кількість"></label><label>Примітка<input id="animalNote" placeholder="Корм, облік, інше"></label><button onclick="saveNote('animal')">Зберегти</button><div id="animalList"></div></div></section>
+<section id="strawberry" hidden>
+<button class="secondary back" onclick="show('home')">← Головне меню</button>
+<div class="panel">
+<h2>🍓 Полуниця — Хоней</h2>
+<p>Вирощування під плівкою та крапельним поливом.</p>
+<h3>🌱 Календар підживлення</h3>
+<p>Весна — ріст листя.</p>
+<p>Цвітіння — формування ягід.</p>
+<p>Після врожаю — відновлення кущів.</p>
+<p>Серпень–вересень — підготовка до наступного сезону.</p>
+<h3>💧 Полив</h3>
+<p>Контроль вологості та крапельної стрічки.</p>
+<h3>🛡️ Хвороби</h3>
+<p>Сіра гниль, борошниста роса, плямистості.</p>
+<h3>🐛 Шкідники</h3>
+<p>Суничний кліщ, довгоносик, слимаки.</p>
+<h3>📋 Щотижневий огляд</h3>
+<p>Перевірити листя, квіти, ягоди та вологість ґрунту.</p>
+</div>
+</section><section id="animals" hidden><button class="secondary back" onclick="show('home')">← Головне меню</button><div class="panel"><h2>🐓 Тварини і птиця</h2><label>Вид / група<input id="animal" placeholder="Качки, кури…"></label><label>Кількість<input id="animalCount" type="number" min="0" placeholder="Кількість"></label><label>Примітка<input id="animalNote" placeholder="Корм, облік, інше"></label><button onclick="saveNote('animal')">Зберегти</button><div id="animalList"></div></div></section>
 <section id="money" hidden><button class="secondary back" onclick="show('home')">← Головне меню</button><div class="panel"><h2>💰 Фінанси</h2><label>Опис<input id="moneyName" placeholder="Насіння, добрива, продаж урожаю"></label><label>Сума, грн<input id="moneyAmount" type="number" min="0" step="0.01"></label><label>Тип<select id="moneyType"><option>Витрата</option><option>Дохід</option></select></label><button onclick="addMoney()">Додати</button><div id="moneyList"></div></div></section>
 <section id="photo" hidden><button class="secondary back" onclick="show('home')">← Головне меню</button><div class="panel"><h2>📷 Фото рослини</h2><p>Зроби фото листка або всієї рослини. Це перший крок для огляду; автоматичне визначення хвороб потребує підключення окремого AI-сервісу.</p><input type="file" accept="image/*" capture="environment" id="plantPhoto"><img id="preview" style="max-width:100%;border-radius:12px;display:none"><label>Що помітив на рослині?<textarea id="symptoms" placeholder="Плями, пожовтіння, комахи, в'янення…"></textarea></label><button onclick="photoInfo()">Підготувати опис для аналізу</button><div id="photoResult"></div></div></section>
 <section id="voice" hidden><button class="secondary back" onclick="show('home')">← Головне меню</button><div class="panel"><h2>🎙️ Мій агроном</h2><p>Можна надиктувати запитання. Прототип розпізнає мовлення, якщо браузер підтримує цю функцію.</p><button onclick="listen()">🎙️ Говорити</button><p id="voiceText" class="small">Натисни кнопку та скажи запитання.</p><label>Або напиши запитання<textarea id="question" placeholder="Що врахувати перед підживленням полуниці?"></textarea></label><button onclick="answerLocal()">Отримати підказку</button><div id="answer"></div><p class="small">Голосова відповідь і персональні агрономічні рекомендації з AI будуть додані в наступній версії.</p></div></section>
